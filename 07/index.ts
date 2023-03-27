@@ -29,32 +29,36 @@ interface Cursos {
     nivel: "iniciante" | "avançado"
 }
 
-const fetchApi = async (url:string)=>{
+const fetchApi = async (url:string) =>{
     const response = await fetch(url)
-    const data = await response.json()
-    return data
+    const data:Array<Cursos> = await response.json()
+    showCursos(data)
 }
 
 const showCursos = (data:Array<Cursos>)=>{
     for(let i = 0; i < data.length; i++){
         document.body.innerHTML += `
             <div>
-                <h3>Curso: ${data[i].nome}</h3>
+                <h3 style="color:${data[i].nivel == 'iniciante' ? 'blue' : 'red'}">Curso: ${data[i].nome}</h3>
                 <p>Carga Horária: ${data[i].horas}h</p>
                 <p>Aulas: ${data[i].aulas}</p>
                 <p>Gratuito: ${data[i].gratuito ? "Sim" : "Não"}</p>
+                <strong>Tags</strong>
                 <ul>
                     ${
-                        data[i].tags.forEach((tag))
+                        data[i].tags.map((tag)=> '<li>'+ tag + '</li>')
                     }
                 </ul>
+                <strong>Id Aulas</strong>
+                <ul>
+                    ${
+                        data[i].idAulas.map((aula)=> '<li>'+ aula + '</li>')
+                    }
+                </ul>
+                <strong>Nivel: ${data[i].nivel}</strong>
             </div>
         `
     }
 }
 
-
-
-
-
-
+fetchApi('https://api.origamid.dev/json/cursos.json')
